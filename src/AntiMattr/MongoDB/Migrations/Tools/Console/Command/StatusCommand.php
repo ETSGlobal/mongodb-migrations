@@ -12,6 +12,7 @@
 namespace AntiMattr\MongoDB\Migrations\Tools\Console\Command;
 
 use AntiMattr\MongoDB\Migrations\Configuration\Configuration;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,6 +21,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Matthew Fitzgerald <matthewfitz@gmail.com>
  */
+#[AsCommand(
+    name: 'mongodb:migrations:status',
+    description: 'View the status of a set of migrations.',
+)]
 class StatusCommand extends AbstractCommand
 {
     protected static $defaultName = 'mongodb:migrations:status';
@@ -27,7 +32,6 @@ class StatusCommand extends AbstractCommand
     protected function configure()
     {
         $this
-            ->setDescription('View the status of a set of migrations.')
             ->addOption(
                 'show-versions',
                 null,
@@ -52,7 +56,7 @@ EOT
      * @param \Symfony\Component\Console\Input\InputInterface
      * @param \Symfony\Component\Console\Output\OutputInterface
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $configuration = $this->getMigrationConfiguration($input, $output);
         $configMap = $configuration->getDetailsMap();
@@ -157,7 +161,7 @@ EOT
             }
         }
 
-        return 0;
+        return parent::SUCCESS;
     }
 
     /**

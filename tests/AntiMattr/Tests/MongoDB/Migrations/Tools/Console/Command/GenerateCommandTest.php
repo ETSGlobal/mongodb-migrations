@@ -50,15 +50,11 @@ class GenerateCommandTest extends TestCase
         // Expectations
         $this->config->expects($this->once())
             ->method('getMigrationsNamespace')
-            ->will(
-                $this->returnValue($migrationsNamespace)
-            )
+            ->willReturn($migrationsNamespace)
         ;
         $this->config->expects($this->once())
             ->method('getMigrationsDirectory')
-            ->will(
-                $this->returnValue(vfsStream::url($migrationsDirectory))
-            )
+            ->willReturn(vfsStream::url($migrationsDirectory))
         ;
 
         $this->command->run(
@@ -75,11 +71,10 @@ class GenerateCommandTest extends TestCase
         $this->assertTrue($root->hasChild($filename));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testExecuteWithInvalidMigrationDirectory()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $migrationsNamespace = 'migrations-namespace';
         $migrationsDirectory = 'missing-directory';
 
@@ -94,18 +89,14 @@ class GenerateCommandTest extends TestCase
         // Expectations
         $this->config->expects($this->once())
             ->method('getMigrationsNamespace')
-            ->will(
-                $this->returnValue($migrationsNamespace)
-            )
+            ->willReturn($migrationsNamespace)
         ;
         $this->config->expects($this->once())
             ->method('getMigrationsDirectory')
-            ->will(
-                $this->returnValue(
-                    sprintf('%s/%s',
-                        vfsStream::url('Base'),
-                        $migrationsDirectory
-                    )
+            ->willReturn(
+                sprintf('%s/%s',
+                    vfsStream::url('Base'),
+                    $migrationsDirectory
                 )
             )
         ;
@@ -121,11 +112,6 @@ class GenerateCommandTest extends TestCase
 class GenerateCommandStub extends GenerateCommand
 {
     protected $version;
-
-    public function getPrivateTemplate()
-    {
-        return self::$_template;
-    }
 
     public function setVersionString($version)
     {

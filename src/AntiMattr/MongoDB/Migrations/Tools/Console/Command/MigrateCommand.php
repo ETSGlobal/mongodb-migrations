@@ -13,6 +13,7 @@ namespace AntiMattr\MongoDB\Migrations\Tools\Console\Command;
 
 use AntiMattr\MongoDB\Migrations\Configuration\Configuration;
 use AntiMattr\MongoDB\Migrations\Migration;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,14 +22,15 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * @author Matthew Fitzgerald <matthewfitz@gmail.com>
  */
+#[AsCommand(
+    name: 'mongodb:migrations:migrate',
+    description: 'Execute a migration to a specified version or the latest available version.',
+)]
 class MigrateCommand extends AbstractCommand
 {
-    protected static $defaultName = 'mongodb:migrations:migrate';
-
     protected function configure()
     {
         $this
-            ->setDescription('Execute a migration to a specified version or the latest available version.')
             ->addArgument('version', InputArgument::OPTIONAL, 'The version to migrate to.', null)
             ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command executes a migration to a specified version or the latest available version:
@@ -53,7 +55,7 @@ EOT
      * @param \Symfony\Component\Console\Input\InputInterface
      * @param \Symfony\Component\Console\Output\OutputInterface
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $version = $input->getArgument('version');
 
@@ -93,7 +95,7 @@ EOT
                 if (!$confirmation) {
                     $output->writeln('<error>Migration cancelled!</error>');
 
-                    return 1;
+                    return parent::FAILURE;
                 }
             }
         }
@@ -112,13 +114,13 @@ EOT
             if (!$confirmation) {
                 $output->writeln('<error>Migration cancelled!</error>');
 
-                return 1;
+                return parent::FAILURE;
             }
         }
 
         $migration->migrate($version);
 
-        return 0;
+        return parent::SUCCESS;
     }
 
     protected function createMigration(Configuration $configuration)

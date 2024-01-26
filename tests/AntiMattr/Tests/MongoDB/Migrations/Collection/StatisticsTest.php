@@ -22,11 +22,9 @@ class StatisticsTest extends TestCase
         $this->assertEquals($this->collection, $this->statistics->getCollection());
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testGetCollectionStatsThrowsExceptionWhenDataNotFound()
     {
+        $this->expectException(\Exception::class);
         $database = $this->createMock('MongoDB\Database');
 
         $this->statistics = new StatisticsStub();
@@ -35,7 +33,7 @@ class StatisticsTest extends TestCase
 
         $this->collection->expects($this->once())
             ->method('getCollectionName')
-            ->will($this->returnValue('example'));
+            ->willReturn('example');
 
         $this->statistics->doGetCollectionStats();
     }
@@ -50,7 +48,7 @@ class StatisticsTest extends TestCase
 
         $this->collection->expects($this->once())
             ->method('getCollectionName')
-            ->will($this->returnValue('example'));
+            ->willReturn('example');
 
         $expectedData = [
             'count' => 100,
@@ -58,7 +56,7 @@ class StatisticsTest extends TestCase
 
         $database->expects($this->once())
             ->method('command')
-            ->will($this->returnValue($expectedData));
+            ->willReturn($expectedData);
 
         $data = $this->statistics->doGetCollectionStats();
 

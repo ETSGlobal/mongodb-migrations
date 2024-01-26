@@ -12,6 +12,7 @@
 namespace AntiMattr\MongoDB\Migrations\Tools\Console\Command;
 
 use AntiMattr\MongoDB\Migrations\Configuration\Configuration;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,10 +20,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Matthew Fitzgerald <matthewfitz@gmail.com>
  */
+#[AsCommand(
+    name: 'mongodb:migrations:generate',
+    description: 'Generate a blank migration class.',
+)]
 class GenerateCommand extends AbstractCommand
 {
-    protected static $defaultName = 'mongodb:migrations:generate';
-
     private static $_template =
             '<?php
 
@@ -61,7 +64,6 @@ class Version<version> extends AbstractMigration
     protected function configure()
     {
         $this
-                ->setDescription('Generate a blank migration class.')
                 ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.')
                 ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command generates a blank migration class:
@@ -81,7 +83,7 @@ EOT
      * @param \Symfony\Component\Console\Input\InputInterface
      * @param \Symfony\Component\Console\Output\OutputInterface
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $configuration = $this->getMigrationConfiguration($input, $output);
 
@@ -90,7 +92,7 @@ EOT
 
         $output->writeln(sprintf('Generated new migration class to "<info>%s</info>"', $path));
 
-        return 0;
+        return parent::SUCCESS;
     }
 
     /**

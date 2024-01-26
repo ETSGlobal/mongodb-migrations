@@ -11,6 +11,7 @@
 
 namespace AntiMattr\MongoDB\Migrations\Tools\Console\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,14 +21,15 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * @author Matthew Fitzgerald <matthewfitz@gmail.com>
  */
+#[AsCommand(
+    name: 'mongodb:migrations:execute',
+    description: 'Execute a single migration version up or down manually.',
+)]
 class ExecuteCommand extends AbstractCommand
 {
-    protected static $defaultName = 'mongodb:migrations:execute';
-
     protected function configure()
     {
         $this
-            ->setDescription('Execute a single migration version up or down manually.')
             ->addArgument('version', InputArgument::REQUIRED, 'The version to execute.', null)
             ->addOption('up', null, InputOption::VALUE_NONE, 'Execute the migration up.')
             ->addOption('down', null, InputOption::VALUE_NONE, 'Execute the migration down.')
@@ -54,7 +56,7 @@ EOT
      * @param \Symfony\Component\Console\Input\InputInterface
      * @param \Symfony\Component\Console\Output\OutputInterface
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $version = $input->getArgument('version');
         $direction = $input->getOption('down') ? 'down' : 'up';
@@ -82,6 +84,6 @@ EOT
             }
         }
 
-        return 0;
+        return parent::SUCCESS;
     }
 }

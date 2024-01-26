@@ -53,9 +53,7 @@ class ExecuteCommandTest extends TestCase
         $this->config->expects($this->once())
             ->method('getVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue($this->version)
-            )
+            ->willReturn($this->version)
         ;
 
         $this->version->expects($this->once())
@@ -104,16 +102,12 @@ class ExecuteCommandTest extends TestCase
         $this->config->expects($this->once())
             ->method('getVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue($this->version)
-            )
+            ->willReturn($this->version)
         ;
 
         $question->expects($this->once())
             ->method('ask')
-            ->will(
-                $this->returnValue(true)
-            )
+            ->willReturn(true)
         ;
 
         $this->version->expects($this->once())
@@ -153,7 +147,7 @@ class ExecuteCommandTest extends TestCase
         $commandTester->setInputs(["\n"]);
         $commandTester->execute(['version' => $numVersion]);
 
-        $this->assertRegExp('/Migration cancelled/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Migration cancelled/', $commandTester->getDisplay());
     }
 
     public function testExecuteReplayWithoutInteraction()
@@ -183,9 +177,7 @@ class ExecuteCommandTest extends TestCase
         $this->config->expects($this->once())
             ->method('getVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue($this->version)
-            )
+            ->willReturn($this->version)
         ;
 
         $replay = true;

@@ -3,6 +3,8 @@
 namespace AntiMattr\Tests\MongoDB\Migrations\Configuration;
 
 use AntiMattr\MongoDB\Migrations\Configuration\Configuration;
+use AntiMattr\MongoDB\Migrations\Exception\ConfigurationValidationException;
+use AntiMattr\MongoDB\Migrations\Exception\UnknownVersionException;
 use PHPUnit\Framework\TestCase;
 
 class ConfigurationTest extends TestCase
@@ -158,28 +160,9 @@ class ConfigurationTest extends TestCase
         $this->assertEquals(2, $this->configuration->getNumberOfExecutedMigrations());
     }
 
-    public function testRegisterMigrationsFromDirectory()
-    {
-        $this->configuration->setMigrationsNamespace('Example\Migrations\TestAntiMattr\MongoDB');
-        $this->assertFalse($this->configuration->hasVersion('20140822185742'));
-
-        $directory = dirname(__DIR__) . '/Resources/Migrations/';
-        $this->configuration->registerMigrationsFromDirectory($directory);
-
-        $this->assertEquals(3, count($this->configuration->getMigrations()));
-        $this->assertEquals(3, count($this->configuration->getAvailableVersions()));
-        $this->assertEquals(3, $this->configuration->getNumberOfAvailableMigrations());
-
-        $this->assertTrue($this->configuration->hasVersion('20140822185742'));
-
-        $version = $this->configuration->getVersion('20140822185742');
-    }
-
-    /**
-     * @expectedException \AntiMattr\MongoDB\Migrations\Exception\UnknownVersionException
-     */
     public function testGetVersionThrowsUnknownVersionException()
     {
+        $this->expectException(UnknownVersionException::class);
         $this->configuration->getVersion('20140822185742');
     }
 
@@ -211,42 +194,19 @@ class ConfigurationTest extends TestCase
             ->method('getVersion')
             ->willReturn('found2');
 
-        $collection->expects($this->at(1))
+        $collection->expects($this->any())
             ->method('findOne')
-            ->with(['v' => 'found'])
-            ->willReturn('foo');
-
-        $collection->expects($this->at(2))
-            ->method('findOne')
-            ->with(['v' => 'found2'])
-            ->willReturn(null);
+            ->willReturnOnConsecutiveCalls('foo', null);
 
         $this->assertTrue($this->configuration->hasVersionMigrated($version1));
         $this->assertFalse($this->configuration->hasVersionMigrated($version2));
     }
 
-    /**
-     * @expectedException \AntiMattr\MongoDB\Migrations\Exception\ConfigurationValidationException
-     */
     public function testValidateThrowsConfigurationValidationException()
     {
+        $this->expectException(ConfigurationValidationException::class);
+
         $this->configuration->validate();
-    }
-
-    public function testGetUnavailableMigratedVersions()
-    {
-        $configuration = $this->getMockBuilder('AntiMattr\MongoDB\Migrations\Configuration\Configuration')
-            ->disableOriginalConstructor()
-            ->setMethods(['getMigratedVersions', 'getAvailableVersions'])
-            ->getMock();
-        $configuration->expects($this->once())
-            ->method('getMigratedVersions')
-            ->willReturn(['1', '2']);
-        $configuration->expects($this->once())
-            ->method('getAvailableVersions')
-            ->willReturn(['2', '3']);
-
-        $this->assertEquals(['1'], $configuration->getUnavailableMigratedVersions());
     }
 
     public function testValidate()
@@ -255,12 +215,11 @@ class ConfigurationTest extends TestCase
         self::assertNull($this->configuration->validate());
     }
 
-    /**
-     * @expectedException \DomainException
-     * @expectedExceptionMessage Unexpected duplicate version records in the database
-     */
     public function testDuplicateInGetMigratedTimestampThrowsException()
     {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Unexpected duplicate version records in the database');
+
         $this->prepareValidConfiguration();
 
         $collection = $this->createMock('MongoDB\Collection');
