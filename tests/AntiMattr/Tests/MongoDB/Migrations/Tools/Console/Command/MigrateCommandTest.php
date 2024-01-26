@@ -8,6 +8,7 @@ use AntiMattr\MongoDB\Migrations\Tools\Console\Command\MigrateCommand;
 use AntiMattr\MongoDB\Migrations\Version;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -61,23 +62,17 @@ class MigrateCommandTest extends TestCase
         // Expectations
         $configuration->expects($this->once())
             ->method('getMigratedVersions')
-            ->will(
-                $this->returnValue($executedVersions)
-            )
+            ->willReturn($executedVersions)
         ;
 
         $configuration->expects($this->once())
             ->method('getAvailableVersions')
-            ->will(
-                $this->returnValue($availableVersions)
-            )
+            ->willReturn($availableVersions)
         ;
 
         $question->expects($this->exactly(2))
             ->method('ask')
-            ->will(
-                $this->returnValue(true)
-            )
+            ->willReturn(true)
         ;
 
         $migration->expects($this->once())
@@ -118,16 +113,12 @@ class MigrateCommandTest extends TestCase
         // Expectations
         $configuration->expects($this->once())
             ->method('getMigratedVersions')
-            ->will(
-                $this->returnValue([])
-            )
+            ->willReturn([])
         ;
 
         $configuration->expects($this->once())
             ->method('getAvailableVersions')
-            ->will(
-                $this->returnValue($availableVersions)
-            )
+            ->willReturn($availableVersions)
         ;
 
         $migration->expects($this->once())
@@ -175,7 +166,7 @@ class MigrateCommandTest extends TestCase
         $commandTester->setInputs(["\n"]);
         $commandTester->execute(['version' => $numVersion]);
 
-        $this->assertRegExp('/Migration cancelled/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Migration cancelled/', $commandTester->getDisplay());
     }
 
     public function testDefaultSecondInteractionWillCancelMigration()
@@ -211,14 +202,16 @@ class MigrateCommandTest extends TestCase
         $commandTester->setInputs(['y', "\n"]);
         $commandTester->execute(['version' => $numVersion]);
 
-        $this->assertRegExp('/Migration cancelled/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Migration cancelled/', $commandTester->getDisplay());
     }
 }
 
+#[AsCommand(
+    name: 'mongodb:migrations:migrate',
+    description: 'Execute a migration to a specified version or the latest available version.',
+)]
 class MigrateCommandStub extends MigrateCommand
 {
-    protected static $defaultName = 'mongodb:migrations:migrate';
-
     protected $migration;
 
     public function setMigration(Migration $migration)

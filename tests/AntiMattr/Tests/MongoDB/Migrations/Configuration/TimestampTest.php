@@ -15,7 +15,7 @@ class TimestampTest extends TestCase
         self::assertEquals($expected, (new Timestamp($ts))->getTimestamp());
     }
 
-    public function provideTimestamps(): array
+    public static function provideTimestamps(): array
     {
         $rightNow = new \DateTimeImmutable();
         $secondsSince1970 = (int) $rightNow->format('U');
@@ -56,19 +56,17 @@ class TimestampTest extends TestCase
         return $timestamps;
     }
 
-    /**
-     * @expectedException \DomainException
-     */
     public function testWillThrowAnExceptionForUnknownClass()
     {
+        $this->expectException(\DomainException::class);
+
         (new Timestamp(new \stdClass()))->getTimestamp();
     }
 
-    /**
-     * @expectedException \DomainException
-     */
     public function testWillThrowAnExceptionForNull()
     {
+        $this->expectException(\DomainException::class);
+
         (new Timestamp(null))->getTimestamp();
     }
 }

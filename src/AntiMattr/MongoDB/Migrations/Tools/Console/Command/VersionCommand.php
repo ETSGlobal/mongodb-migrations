@@ -14,6 +14,7 @@ namespace AntiMattr\MongoDB\Migrations\Tools\Console\Command;
 use AntiMattr\MongoDB\Migrations\Configuration\Configuration;
 use AntiMattr\MongoDB\Migrations\Exception\UnknownVersionException;
 use AntiMattr\MongoDB\Migrations\Migration;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,14 +23,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Matthew Fitzgerald <matthewfitz@gmail.com>
  */
+#[AsCommand(
+    name: 'mongodb:migrations:version',
+    description: 'Manually add and delete migration versions from the version table.',
+)]
 class VersionCommand extends AbstractCommand
 {
-    protected static $defaultName = 'mongodb:migrations:version';
-
     protected function configure()
     {
         $this
-            ->setDescription('Manually add and delete migration versions from the version table.')
             ->addArgument('version', InputArgument::REQUIRED, 'The version to add or delete.', null)
             ->addOption('add', null, InputOption::VALUE_NONE, 'Add the specified version.')
             ->addOption('delete', null, InputOption::VALUE_NONE, 'Delete the specified version.')
@@ -54,7 +56,7 @@ EOT
      * @throws UnknownVersionException Throws exception if migration version does not exist
      * @throws \InvalidArgumentException
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $configuration = $this->getMigrationConfiguration($input, $output);
         $migration = $this->createMigration($configuration);
@@ -85,7 +87,7 @@ EOT
             $version->markNotMigrated();
         }
 
-        return 0;
+        return parent::SUCCESS;
     }
 
     protected function createMigration(Configuration $configuration)

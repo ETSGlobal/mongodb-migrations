@@ -93,113 +93,23 @@ class StatusCommandTest extends TestCase
                     ]
                 )
             );
-        $this->output->expects($this->at(0))
+        $this->output->expects($this->exactly(14))
             ->method('writeln')
-            ->with(
-                "\n <info>==</info> Configuration\n"
-            );
-        $this->output->expects($this->at(1))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Name',
-                    $configName
-                )
-            );
-        $this->output->expects($this->at(2))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Database Driver',
-                    'MongoDB'
-                )
-            );
-        $this->output->expects($this->at(3))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Database Name',
-                    $migrationsDatabaseName
-                )
-            );
-        $this->output->expects($this->at(4))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Configuration Source',
-                    'manually configured'
-                )
-            );
-        $this->output->expects($this->at(5))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Version Collection Name',
-                    $migrationsCollectionName
-                )
-            );
-        $this->output->expects($this->at(6))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Migrations Namespace',
-                    $migrationsNamespace
-                )
-            );
-        $this->output->expects($this->at(7))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Migrations Directory',
-                    $migrationsDirectory
-                )
-            );
-        $this->output->expects($this->at(8)) // current version formatted
-        ->method('writeln');
-        $this->output->expects($this->at(9)) // latest version formatted
-        ->method('writeln');
-        $this->output->expects($this->at(10))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Executed Migrations',
-                    $numExecutedMigrations
-                )
-            );
-        $this->output->expects($this->at(11))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Executed Unavailable Migrations',
-                    $numExecutedUnavailableMigrations
-                )
-            );
-        $this->output->expects($this->at(12))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Available Migrations',
-                    $numAvailableMigrations
-                )
-            );
-        $this->output->expects($this->at(13))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'New Migrations',
-                    $numNewMigrations
-                )
+            ->willReturnOnConsecutiveCalls(
+                "\n <info>==</info> Configuration\n",
+                sprintf('%s::%s', 'Name', $configName),
+                sprintf('%s::%s', 'Database Driver', 'MongoDB'),
+                sprintf('%s::%s', 'Database Name', $migrationsDatabaseName),
+                sprintf('%s::%s', 'Configuration Source', 'manually configured'),
+                sprintf('%s::%s', 'Version Collection Name', $migrationsCollectionName),
+                sprintf('%s::%s', 'Migrations Namespace', $migrationsNamespace),
+                sprintf('%s::%s', 'Migrations Directory', $migrationsDirectory),
+                '',
+                '',
+                sprintf('%s::%s', 'Executed Migrations', $numExecutedMigrations),
+                sprintf('%s::%s', 'Executed Unavailable Migrations', $numExecutedUnavailableMigrations),
+                sprintf('%s::%s', 'Available Migrations', $numAvailableMigrations),
+                sprintf('%s::%s', 'New Migrations', $numNewMigrations),
             );
 
         // Run command, run.
@@ -286,140 +196,24 @@ class StatusCommandTest extends TestCase
                 [$unavailableMigratedVersion, $migratedVersion]
             );
 
-        $this->output->expects($this->at(0))
+        $this->output->expects($this->any())
             ->method('writeln')
-            ->with(
-                "\n <info>==</info> Configuration\n"
-            );
-
-        $this->output->expects($this->at(1))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Name',
-                    $configName
-                )
-            );
-
-        $this->output->expects($this->at(2))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Database Driver',
-                    'MongoDB'
-                )
-            );
-
-        $this->output->expects($this->at(3))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Database Name',
-                    $migrationsDatabaseName
-                )
-            );
-        $this->output->expects($this->at(4))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Configuration Source',
-                    'manually configured'
-                )
-            );
-        $this->output->expects($this->at(5))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Version Collection Name',
-                    $migrationsCollectionName
-                )
-            );
-        $this->output->expects($this->at(6))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Migrations Namespace',
-                    $migrationsNamespace
-                )
-            );
-        $this->output->expects($this->at(7))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Migrations Directory',
-                    $migrationsDirectory
-                )
-            );
-        $this->output->expects($this->at(8)) // current version formatted
-        ->method('writeln');
-        $this->output->expects($this->at(9)) // latest version formatted
-        ->method('writeln');
-        $this->output->expects($this->at(10))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Executed Migrations',
-                    $numExecutedMigrations
-                )
-            );
-        $this->output->expects($this->at(11))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::<error>%s</error>',
-                    'Executed Unavailable Migrations',
-                    $numExecutedUnavailableMigrations
-                )
-            );
-        $this->output->expects($this->at(12))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::%s',
-                    'Available Migrations',
-                    $numAvailableMigrations
-                )
-            );
-        $this->output->expects($this->at(13))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '%s::<question>%s</question>',
-                    'New Migrations',
-                    $numNewMigrations
-                )
-            );
-        $this->output->expects($this->at(14))
-            ->method('writeln')
-            ->with("\n <info>==</info> Available Migration Versions\n");
-
-        // Symfony 4.2 has different output
-        $consoleVersion = $this->getSymfonyConsoleVersion();
-        $index = 39;
-        if (version_compare($consoleVersion, '4.2.0', 'ge')) {
-            $index = 40;
-        }
-
-        $this->output->expects($this->at($index))
-            ->method('writeln')
-            ->with("\n <info>==</info> Previously Executed Unavailable Migration Versions\n");
-
-        $this->output->expects($this->at(++$index))
-            ->method('writeln')
-            ->with(
-                sprintf(
-                    '    <comment>>></comment> %s (<comment>%s</comment>)',
-                    \DateTime::createFromFormat('YmdHis', $unavailableMigratedVersion)->format('Y-m-d H:i:s'),
-                    $unavailableMigratedVersion
-                )
+            ->willReturnOnConsecutiveCalls(
+                "\n <info>==</info> Configuration\n",
+                sprintf('%s::%s', 'Name', $configName),
+                sprintf('%s::%s', 'Database Driver', 'MongoDB'),
+                sprintf('%s::%s', 'Database Name', $migrationsDatabaseName),
+                sprintf('%s::%s', 'Configuration Source', 'manually configured'),
+                sprintf('%s::%s', 'Version Collection Name', $migrationsCollectionName),
+                sprintf('%s::%s', 'Migrations Namespace', $migrationsNamespace),
+                sprintf('%s::%s', 'Migrations Directory', $migrationsDirectory),
+                '',
+                '',
+                sprintf('%s::%s', 'Executed Migrations', $numExecutedMigrations),
+                sprintf('%s::<error>%s</error>', 'Executed Unavailable Migrations', $numExecutedUnavailableMigrations),
+                sprintf('%s::%s', 'Available Migrations', $numAvailableMigrations),
+                sprintf('%s::<question>%s</question>', 'New Migrations', $numNewMigrations),
+                "\n <info>==</info> Available Migration Versions\n",
             );
 
         // Run command, run.

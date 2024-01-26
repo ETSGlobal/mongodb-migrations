@@ -3,6 +3,7 @@
 namespace AntiMattr\Tests\MongoDB\Migrations\Tools\Console\Command;
 
 use AntiMattr\MongoDB\Migrations\Configuration\Configuration;
+use AntiMattr\MongoDB\Migrations\Exception\UnknownVersionException;
 use AntiMattr\MongoDB\Migrations\Migration;
 use AntiMattr\MongoDB\Migrations\Tools\Console\Command\VersionCommand;
 use PHPUnit\Framework\TestCase;
@@ -31,11 +32,10 @@ class VersionCommandTest extends TestCase
         $this->command->setMigration($this->migration);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         // Variables and objects
         $numVersion = '123456789012';
         $input = new ArgvInput(
@@ -52,11 +52,10 @@ class VersionCommandTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \AntiMattr\MongoDB\Migrations\Exception\UnknownVersionException
-     */
     public function testUnknownVersionException()
     {
+        $this->expectException(UnknownVersionException::class);
+
         // Variables and objects
         $numVersion = '123456789012';
         $input = new ArgvInput(
@@ -71,9 +70,7 @@ class VersionCommandTest extends TestCase
         $this->config->expects($this->once())
             ->method('hasVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue(false)
-            )
+            ->willReturn(false)
         ;
 
         // Run command, run.
@@ -99,25 +96,19 @@ class VersionCommandTest extends TestCase
         $this->config->expects($this->once())
             ->method('hasVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue(true)
-            )
+            ->willReturn(true)
         ;
 
         $this->config->expects($this->once())
             ->method('getVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue($this->version)
-            )
+            ->willReturn($this->version)
         ;
 
         $this->config->expects($this->once())
             ->method('hasVersionMigrated')
             ->with($this->version)
-            ->will(
-                $this->returnValue(false)
-            )
+            ->willReturn(false)
         ;
 
         $this->version->expects($this->once())
@@ -147,25 +138,19 @@ class VersionCommandTest extends TestCase
         $this->config->expects($this->once())
             ->method('hasVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue(true)
-            )
+            ->willReturn(true)
         ;
 
         $this->config->expects($this->once())
             ->method('getVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue($this->version)
-            )
+            ->willReturn($this->version)
         ;
 
         $this->config->expects($this->once())
             ->method('hasVersionMigrated')
             ->with($this->version)
-            ->will(
-                $this->returnValue(true)
-            )
+            ->willReturn(true)
         ;
 
         $this->version->expects($this->once())
@@ -179,11 +164,10 @@ class VersionCommandTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDownOnNonMigratedVersionThrowsInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         // Variables and objects
         $numVersion = '123456789012';
         $input = new ArgvInput(
@@ -198,25 +182,19 @@ class VersionCommandTest extends TestCase
         $this->config->expects($this->once())
             ->method('hasVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue(true)
-            )
+            ->willReturn(true)
         ;
 
         $this->config->expects($this->once())
             ->method('getVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue($this->version)
-            )
+            ->willReturn($this->version)
         ;
 
         $this->config->expects($this->once())
             ->method('hasVersionMigrated')
             ->with($this->version)
-            ->will(
-                $this->returnValue(false)
-            )
+            ->willReturn(false)
         ;
 
         // Run command, run.
@@ -226,11 +204,10 @@ class VersionCommandTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testUpOnMigratedVersionThrowsInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         // Variables and objects
         $numVersion = '123456789012';
         $input = new ArgvInput(
@@ -245,25 +222,19 @@ class VersionCommandTest extends TestCase
         $this->config->expects($this->once())
             ->method('hasVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue(true)
-            )
+            ->willReturn(true)
         ;
 
         $this->config->expects($this->once())
             ->method('getVersion')
             ->with($numVersion)
-            ->will(
-                $this->returnValue($this->version)
-            )
+            ->willReturn($this->version)
         ;
 
         $this->config->expects($this->once())
             ->method('hasVersionMigrated')
             ->with($this->version)
-            ->will(
-                $this->returnValue(true)
-            )
+            ->willReturn(true)
         ;
 
         // Run command, run.

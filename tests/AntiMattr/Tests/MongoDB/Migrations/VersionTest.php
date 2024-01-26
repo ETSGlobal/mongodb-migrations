@@ -3,6 +3,7 @@
 namespace AntiMattr\Tests\MongoDB\Migrations;
 
 use AntiMattr\MongoDB\Migrations\AbstractMigration;
+use AntiMattr\MongoDB\Migrations\Exception\AbortException;
 use AntiMattr\MongoDB\Migrations\Version;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Database;
@@ -31,10 +32,10 @@ class VersionTest extends TestCase
 
         $this->configuration->expects($this->once())
             ->method('getOutputWriter')
-            ->will($this->returnValue($this->outputWriter));
+            ->willReturn($this->outputWriter);
         $this->configuration->expects($this->once())
             ->method('getDatabase')
-            ->will($this->returnValue($this->db));
+            ->willReturn($this->db);
 
         $this->version = new VersionStub($this->configuration, $this->versionName, $this->className);
         $this->version->setStatistics($this->statistics);
@@ -59,7 +60,7 @@ class VersionTest extends TestCase
 
         $collection->expects($this->once())
             ->method('getCollectionName')
-            ->will($this->returnValue('test_name'));
+            ->willReturn('test_name');
 
         $expectedException = new \RuntimeException();
 
@@ -82,7 +83,7 @@ class VersionTest extends TestCase
 
         $collection->expects($this->once())
             ->method('getCollectionName')
-            ->will($this->returnValue('test_name'));
+            ->willReturn('test_name');
 
         $this->statistics->expects($this->once())
             ->method('updateBefore');
@@ -104,7 +105,7 @@ class VersionTest extends TestCase
 
         $this->configuration->expects($this->once())
             ->method('getCollection')
-            ->will($this->returnValue($collection));
+            ->willReturn($collection);
 
         $insert = [
             'v' => $this->versionName,
@@ -129,7 +130,7 @@ class VersionTest extends TestCase
 
         $this->configuration->expects($this->once())
             ->method('getCollection')
-            ->will($this->returnValue($collection));
+            ->willReturn($collection);
 
         $query = [
             'v' => $this->versionName,
@@ -159,7 +160,7 @@ class VersionTest extends TestCase
 
         $this->configuration->expects($this->once())
             ->method('getCollection')
-            ->will($this->returnValue($collection));
+            ->willReturn($collection);
 
         $remove = [
             'v' => $this->versionName,
@@ -201,11 +202,11 @@ class VersionTest extends TestCase
 
         $this->statistics->expects($this->once())
             ->method('getCollection')
-            ->will($this->returnValue($collection));
+            ->willReturn($collection);
 
         $collection->expects($this->exactly(2))
             ->method('getCollectionName')
-            ->will($this->returnValue('test_name'));
+            ->willReturn('test_name');
 
         $this->statistics->expects($this->once())
             ->method('updateAfter');
@@ -230,11 +231,11 @@ class VersionTest extends TestCase
      * @test
      *
      * testExecuteDownWithReplayThrowsException
-     *
-     * @expectedException \AntiMattr\MongoDB\Migrations\Exception\AbortException
      */
     public function testExecuteDownWithReplayThrowsException()
     {
+        $this->expectException(AbortException::class);
+
         // These methods will not be called
         $this->migration->expects($this->never())->method('down');
         $this->configuration->expects($this->never())
@@ -263,7 +264,7 @@ class VersionTest extends TestCase
 
         $this->configuration->expects($this->once())
             ->method('getCollection')
-            ->will($this->returnValue($collection));
+            ->willReturn($collection);
 
         $this->version->execute($direction);
     }
@@ -288,12 +289,12 @@ class VersionTest extends TestCase
 
         $this->configuration->expects($this->once())
             ->method('getCollection')
-            ->will($this->returnValue($collection));
+            ->willReturn($collection);
 
         $this->version->execute($direction);
     }
 
-    public function provideDirection()
+    public static function provideDirection()
     {
         return [
             ['up'],
