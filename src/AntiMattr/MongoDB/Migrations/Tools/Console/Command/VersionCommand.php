@@ -29,7 +29,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class VersionCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument('version', InputArgument::REQUIRED, 'The version to add or delete.', null)

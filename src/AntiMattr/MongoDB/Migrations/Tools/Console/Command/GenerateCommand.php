@@ -61,7 +61,7 @@ class Version<version> extends AbstractMigration
 }
 ';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
                 ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.')

@@ -29,7 +29,7 @@ class StatusCommand extends AbstractCommand
 {
     protected static $defaultName = 'mongodb:migrations:status';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(

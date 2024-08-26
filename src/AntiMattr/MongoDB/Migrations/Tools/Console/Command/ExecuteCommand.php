@@ -27,7 +27,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 )]
 class ExecuteCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument('version', InputArgument::REQUIRED, 'The version to execute.', null)

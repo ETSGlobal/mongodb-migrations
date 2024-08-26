@@ -214,6 +214,14 @@ class StatusCommandTest extends TestCase
                 sprintf('%s::%s', 'Available Migrations', $numAvailableMigrations),
                 sprintf('%s::<question>%s</question>', 'New Migrations', $numNewMigrations),
                 "\n <info>==</info> Available Migration Versions\n",
+                "\n <info>==</info> Available Migration Versions\n",
+                "\n <info>==</info> Available Migration Versions\n",
+                "\n <info>==</info> Available Migration Versions\n",
+                "\n <info>==</info> Available Migration Versions\n",
+                "\n <info>==</info> Available Migration Versions\n",
+                "\n <info>==</info> Available Migration Versions\n",
+                "\n <info>==</info> Available Migration Versions\n",
+                "\n <info>==</info> Available Migration Versions\n",
             );
 
         // Run command, run.
