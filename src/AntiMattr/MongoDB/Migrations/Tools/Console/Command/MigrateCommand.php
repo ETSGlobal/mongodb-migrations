@@ -28,7 +28,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 )]
 class MigrateCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument('version', InputArgument::OPTIONAL, 'The version to migrate to.', null)
